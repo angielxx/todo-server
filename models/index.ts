@@ -2,6 +2,10 @@ import path from 'path';
 import Sequelize from 'sequelize';
 import process from 'process';
 import configObj from '../config';
+import Users from './users';
+import Todos from './todos';
+import Categories from './categories';
+import TaskCategories from './taskCategories';
 
 const basename = path.basename(__filename);
 
@@ -16,8 +20,11 @@ export const sequelize = new Sequelize.Sequelize(
   { dialect: 'postgres' }
 );
 
-// User.initiate(sequelize);
-// Todo.initiate(sequelize);
+Users.initiate(sequelize);
+Todos.initiate(sequelize);
+Categories.initiate(sequelize);
+TaskCategories.initiate(sequelize);
 
-// User.associate();
-// Todo.associate();
+Todos.associate();
+Categories.associate();
+TaskCategories.associate();

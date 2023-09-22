@@ -8,59 +8,47 @@ import Sequelize, {
 } from 'sequelize';
 import Users from './users';
 
-class Todos extends Model<
-  InferAttributes<Todos>,
-  InferCreationAttributes<Todos>
+class Categories extends Model<
+  InferAttributes<Categories>,
+  InferCreationAttributes<Categories>
 > {
-  declare todoId: CreationOptional<number>;
-  declare date: string;
-  declare title: string;
-  declare status: 'done' | 'in progress' | 'not started';
-  declare created_at: CreationOptional<Date>;
-  declare updated_at: CreationOptional<Date>;
+  declare categoryId: CreationOptional<number>;
+  declare name: string;
+  declare color: string;
   declare userId: ForeignKey<Users['userId']>;
 
   static initiate(sequelize: Sequelize.Sequelize) {
-    Todos.init(
+    Categories.init(
       {
-        todoId: {
+        categoryId: {
           type: DataTypes.BIGINT,
           primaryKey: true,
           allowNull: false,
           autoIncrement: true,
         },
-        date: {
-          type: DataTypes.DATE,
-          allowNull: false,
-        },
-        title: {
+        name: {
           type: DataTypes.CHAR(50),
           allowNull: false,
         },
-        status: {
+        color: {
           type: DataTypes.CHAR(25),
           allowNull: false,
         },
-
-        created_at: DataTypes.DATE,
-        updated_at: DataTypes.DATE,
       },
 
       {
         sequelize,
-        modelName: 'Todos',
-        tableName: 'Todos',
-        paranoid: true,
+        modelName: 'Categories',
+        tableName: 'Categories',
+        timestamps: false,
         charset: 'utf8',
         collate: 'utf8_general_ci',
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
       }
     );
   }
 
   static associate() {
-    Users.hasMany(Todos, {
+    Users.hasMany(Categories, {
       foreignKey: 'userId',
       onDelete: 'SET NULL',
       onUpdate: 'RESTRICT',
@@ -68,4 +56,4 @@ class Todos extends Model<
   }
 }
 
-export default Todos;
+export default Categories;

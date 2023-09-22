@@ -1,5 +1,3 @@
-// models/user.js
-
 import Sequelize, {
   CreationOptional,
   DataTypes,
@@ -12,19 +10,20 @@ class Users extends Model<
   InferAttributes<Users>,
   InferCreationAttributes<Users>
 > {
-  declare user_id: CreationOptional<number>;
+  declare userId: CreationOptional<number>;
   declare email: string;
   declare password: string;
   declare username: string;
-  declare created_at: CreationOptional<Date>;
+  declare createdAt: CreationOptional<Date>;
 
   static initiate(sequelize: Sequelize.Sequelize) {
     Users.init(
       {
-        user_id: {
+        userId: {
           type: DataTypes.BIGINT,
           primaryKey: true,
           allowNull: false,
+          autoIncrement: true,
         },
         email: {
           type: DataTypes.STRING(255),
@@ -39,7 +38,7 @@ class Users extends Model<
           allowNull: false,
         },
 
-        created_at: DataTypes.DATE,
+        createdAt: DataTypes.DATE,
       },
       {
         sequelize,
@@ -48,14 +47,11 @@ class Users extends Model<
         paranoid: true,
         charset: 'utf8',
         collate: 'utf8_general_ci',
-        createdAt: 'created_at',
         updatedAt: false,
         deletedAt: false,
       }
     );
   }
-
-  // static associate(db) {}
 }
 
 export default Users;
