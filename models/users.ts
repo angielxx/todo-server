@@ -8,7 +8,10 @@ import Sequelize, {
   Model,
 } from 'sequelize';
 
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+class Users extends Model<
+  InferAttributes<Users>,
+  InferCreationAttributes<Users>
+> {
   declare user_id: CreationOptional<number>;
   declare email: string;
   declare password: string;
@@ -16,7 +19,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare created_at: CreationOptional<Date>;
 
   static initiate(sequelize: Sequelize.Sequelize) {
-    User.init(
+    Users.init(
       {
         user_id: {
           type: DataTypes.BIGINT,
@@ -55,4 +58,4 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   // static associate(db) {}
 }
 
-module.exports = User;
+export default Users;
