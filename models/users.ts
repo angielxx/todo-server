@@ -13,7 +13,6 @@ class Users extends Model<
   declare userId: CreationOptional<number>;
   declare email: string;
   declare password: string;
-  declare username: string;
   declare createdAt: CreationOptional<Date>;
 
   static initiate(sequelize: Sequelize.Sequelize) {
@@ -30,11 +29,7 @@ class Users extends Model<
           allowNull: false,
         },
         password: {
-          type: DataTypes.STRING(255),
-          allowNull: false,
-        },
-        username: {
-          type: DataTypes.STRING(255),
+          type: DataTypes.STRING(512),
           allowNull: false,
         },
 
@@ -43,8 +38,7 @@ class Users extends Model<
       {
         sequelize,
         modelName: 'Users',
-        tableName: 'users',
-        paranoid: true,
+        tableName: 'Users',
         charset: 'utf8',
         collate: 'utf8_general_ci',
         updatedAt: false,
