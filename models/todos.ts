@@ -15,7 +15,7 @@ class Todos extends Model<
   declare todoId: CreationOptional<number>;
   declare date: string;
   declare title: string;
-  declare status: 'done' | 'in progress' | 'not started';
+  declare isCompleted: boolean;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
   declare userId: ForeignKey<Users['userId']>;
@@ -34,11 +34,12 @@ class Todos extends Model<
           allowNull: false,
         },
         title: {
-          type: DataTypes.CHAR(50),
+          type: DataTypes.STRING(50),
           allowNull: false,
         },
-        status: {
-          type: DataTypes.CHAR(25),
+        isCompleted: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
           allowNull: false,
         },
 
@@ -50,7 +51,6 @@ class Todos extends Model<
         sequelize,
         modelName: 'Todos',
         tableName: 'Todos',
-        paranoid: true,
         charset: 'utf8',
         collate: 'utf8_general_ci',
         createdAt: 'created_at',

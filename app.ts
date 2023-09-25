@@ -8,10 +8,11 @@ import passport from 'passport';
 import authRouter from './routes/authRouter';
 import { sequelize } from './models';
 import todoRouter from './routes/todoRouter';
-
-const app = express();
+import passportConfig from './config/passport';
 
 dotenv.config();
+const app = express();
+passportConfig();
 
 const corOptions = {
   origin: 'http://localhost:5173',
@@ -34,18 +35,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
-  res.status(500).send({
-    message: 'Server Error',
-    error: err,
-  });
-});
-
 app.use('/auth', authRouter);
 
-app.use(passport.authenticate('jwt', { session: false }));
+app.use('/todos', passport.authenticate('jwt', { session: false }), todoRouter);
 
-app.use('/todos', todoRouter);
+// app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+//   console.log('req', req.body);
+//   res.status(500).send({
+//     message: 'Server Error',
+//     error: err,
+//   });
+// });
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
