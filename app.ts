@@ -1,11 +1,13 @@
 import express, { NextFunction, Request, Response } from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
 
 import authRouter from './routes/authRouter';
 import { sequelize } from './models';
+import todoRouter from './routes/todoRouter';
 
 const app = express();
 
@@ -27,8 +29,10 @@ sequelize
 
 app.use(morgan('dev'));
 app.use(cors(corOptions));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(passport.initialize());
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   res.status(500).send({
@@ -38,6 +42,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
 });
 
 app.use('/auth', authRouter);
+
+app.use(passport.authenticate('jwt', { session: false }));
+
+app.use('/todos', todoRouter);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
