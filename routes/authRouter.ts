@@ -1,9 +1,10 @@
 import express from 'express';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 import Users from '../models/users';
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const { SECRET_KEY, ACCESS_SECRET, REFRESH_SECRET } = process.env;
 
 const authRouter = express.Router();
 
@@ -18,12 +19,12 @@ authRouter.post('/signup', async (req, res, next) => {
     res.status(409).send({
       message: '동일한 이메일이 이미 사용 중입니다.',
     });
-    res.end();
+
     return;
   }
 
   if (!hasSameEamil) {
-    const newUser = await Users.create({
+    await Users.create({
       email,
       password: crypto
         .createHash('sha512')
@@ -32,7 +33,7 @@ authRouter.post('/signup', async (req, res, next) => {
     });
 
     res.send(200).send();
-    res.end();
+
     return;
   }
 });
@@ -60,9 +61,28 @@ authRouter.post('/signin', async (req, res) => {
     res.status(400).send({
       message: '비밀번호가 틀렸습니다.',
     });
+
     return;
   } else {
-    res.status(200).send();
+    const ACCESS_KEY = process.env.ACCESS_SECRET as string;
+    const REFRESH_KEY = process.env.REFRESH_SECRET as string;
+
+    const access_token = jwt.sign({ type: 'JWT', email }, ACCESS_KEY, {
+      expiresIn: '15m',
+    });
+    const refresh_token = jwt.sign({ type: 'JWT', email }, REFRESH_KEY, {
+      expiresIn: '1d',
+    });
+
+    res
+      .cookie('refresh_token', refresh_token, {
+        sameSite: 'none',
+        httpOnly: true,
+        secure: true,
+      })
+      .status(200)
+      .send({ access_token });
+
     return;
   }
 });

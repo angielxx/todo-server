@@ -1,16 +1,19 @@
-import express, { Express, NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
+import dotenv from 'dotenv';
 
 import authRouter from './routes/authRouter';
-
-const { sequelize } = require('./models');
+import { sequelize } from './models';
 
 const app = express();
 
+dotenv.config();
+
 const corOptions = {
   origin: 'http://localhost:5173',
+  credentials: true,
 };
 
 sequelize
