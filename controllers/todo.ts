@@ -67,13 +67,13 @@ const createTodo: RequestHandler = async (req, res) => {
     return res.status(401).send('Unauthorized');
   }
 
-  const user = req.user as Users;
+  const { userId } = req.user as Users;
 
   const { title, categoryId, date } = req.body;
 
   try {
     const todo = await Todos.create({
-      userId: user.userId,
+      userId,
       date,
       title,
       isCompleted: false,
@@ -90,7 +90,7 @@ const createTodo: RequestHandler = async (req, res) => {
 
     todoObj.categoryId = categoryId;
 
-    res.status(200).send(todoObj);
+    res.status(201).send(todoObj);
 
     return;
   } catch (error) {
@@ -98,4 +98,52 @@ const createTodo: RequestHandler = async (req, res) => {
   }
 };
 
-export { getTodos, createTodo, getTodosByQuery };
+const updateTodo: RequestHandler = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  const { id } = req.params;
+
+  const todo = await Todos.findByPk(id);
+
+  if (!todo) {
+    res.status(404).send({ message: '존재하지 않는 태스크' });
+
+    return;
+  }
+
+  const editedTodo = await todo.update({ ...req.body });
+
+  res.status(200).send({ todo: editedTodo });
+
+  return;
+};
+
+const deleteTodo: RequestHandler = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  const { id } = req.params;
+
+  const todo = await Todos.findByPk(id);
+
+  if (!todo) {
+    res.status(404).send({ message: '존재하지 않는 태스크' });
+
+    return;
+  }
+
+  await Todos.destroy({
+    where: {
+      todoId: todo.todoId,
+    },
+  });
+
+  res.status(204).send();
+
+  return;
+};
+
+export { getTodos, createTodo, getTodosByQuery, updateTodo, deleteTodo };

@@ -7,6 +7,7 @@ import Sequelize, {
   Model,
 } from 'sequelize';
 import Users from './users';
+import Categories from './categories';
 
 class Todos extends Model<
   InferAttributes<Todos>,
@@ -19,6 +20,7 @@ class Todos extends Model<
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
   declare userId: ForeignKey<Users['userId']>;
+  declare categoryId: ForeignKey<Categories['categoryId']>;
 
   static initiate(sequelize: Sequelize.Sequelize) {
     Todos.init(
@@ -29,14 +31,17 @@ class Todos extends Model<
           allowNull: false,
           autoIncrement: true,
         },
+
         date: {
           type: DataTypes.DATEONLY,
           allowNull: false,
         },
+
         title: {
           type: DataTypes.STRING(50),
           allowNull: false,
         },
+
         isCompleted: {
           type: DataTypes.BOOLEAN,
           defaultValue: false,
@@ -62,6 +67,12 @@ class Todos extends Model<
   static associate() {
     Users.hasMany(Todos, {
       foreignKey: 'userId',
+      onDelete: 'SET NULL',
+      onUpdate: 'RESTRICT',
+    });
+
+    Categories.hasMany(Todos, {
+      foreignKey: 'categoryId',
       onDelete: 'SET NULL',
       onUpdate: 'RESTRICT',
     });

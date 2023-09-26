@@ -24,10 +24,12 @@ class Users extends Model<
           allowNull: false,
           autoIncrement: true,
         },
+
         email: {
           type: DataTypes.STRING(255),
           allowNull: false,
         },
+
         password: {
           type: DataTypes.STRING(512),
           allowNull: false,
@@ -35,6 +37,7 @@ class Users extends Model<
 
         createdAt: DataTypes.DATE,
       },
+
       {
         sequelize,
         modelName: 'Users',
