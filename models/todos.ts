@@ -30,7 +30,7 @@ class Todos extends Model<
           autoIncrement: true,
         },
         date: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATEONLY,
           allowNull: false,
         },
         title: {

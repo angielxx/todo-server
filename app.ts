@@ -39,13 +39,12 @@ app.use('/auth', authRouter);
 
 app.use('/todos', passport.authenticate('jwt', { session: false }), todoRouter);
 
-// app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
-//   console.log('req', req.body);
-//   res.status(500).send({
-//     message: 'Server Error',
-//     error: err,
-//   });
-// });
+app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+  res.status(500).send({
+    message: 'Server Error',
+    error: err,
+  });
+});
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

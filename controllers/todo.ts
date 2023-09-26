@@ -11,17 +11,55 @@ const getTodos: RequestHandler = async (req, res) => {
 
   const user = req.user as Users;
 
-  const todos = await Todos.findAll({
-    where: {
-      userId: user.userId,
-    },
-    include: [
-      {
-        model: TaskCategories,
-        attributes: ['categoryId'],
+  try {
+    const todos = await Todos.findAll({
+      where: {
+        userId: user.userId,
       },
-    ],
-  });
+      include: [
+        {
+          model: TaskCategories,
+          attributes: ['categoryId'],
+        },
+      ],
+    });
+
+    res.status(200).send({ todos });
+
+    return;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const getTodosByQuery: RequestHandler = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  const user = req.user as Users;
+
+  try {
+    const todos = await Todos.findAll({
+      attributes: ['date', 'isCompleted', 'title', 'todoId'],
+      where: {
+        userId: user.userId,
+        ...req.query,
+      },
+      include: [
+        {
+          model: TaskCategories,
+          attributes: ['categoryId'],
+        },
+      ],
+    });
+
+    res.status(200).send({ todos });
+
+    return;
+  } catch (err) {
+    throw err;
+  }
 };
 
 const createTodo: RequestHandler = async (req, res) => {
@@ -60,4 +98,4 @@ const createTodo: RequestHandler = async (req, res) => {
   }
 };
 
-export { getTodos, createTodo };
+export { getTodos, createTodo, getTodosByQuery };

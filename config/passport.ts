@@ -23,7 +23,7 @@ export default () => {
         const user = await Users.findOne({
           where: { userId: jwtPayload.id },
         });
-        console.log('here', user?.userId, jwtPayload.user);
+
         if (user) {
           return done(null, user);
         } else {

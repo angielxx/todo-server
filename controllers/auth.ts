@@ -69,7 +69,7 @@ const signin: RequestHandler = async (req, res, next) => {
       { type: 'JWT', id: user.userId, email },
       ACCESS_KEY,
       {
-        expiresIn: '15m',
+        expiresIn: '1d',
       }
     );
     const refresh_token = jwt.sign({ type: 'JWT', email }, REFRESH_KEY, {
