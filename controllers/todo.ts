@@ -131,7 +131,7 @@ const deleteTodo: RequestHandler = async (req, res) => {
   const todo = await Todos.findByPk(id);
 
   if (!todo) {
-    res.status(404).send({ message: '존재하지 않는 태스크' });
+    res.status(404).send({ message: '존재하지 않는 태스크입니다.' });
 
     return;
   }

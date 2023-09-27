@@ -42,7 +42,7 @@ class Categories extends Model<
         sequelize,
         modelName: 'Categories',
         tableName: 'Categories',
-        timestamps: false,
+        timestamps: true,
         charset: 'utf8',
         collate: 'utf8_general_ci',
       }
