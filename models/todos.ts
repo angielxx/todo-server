@@ -17,8 +17,8 @@ class Todos extends Model<
   declare date: string;
   declare title: string;
   declare isCompleted: boolean;
-  declare created_at: CreationOptional<Date>;
-  declare updated_at: CreationOptional<Date>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
   declare userId: ForeignKey<Users['userId']>;
   declare categoryId: ForeignKey<Categories['categoryId']>;
 
@@ -48,18 +48,17 @@ class Todos extends Model<
           allowNull: false,
         },
 
-        created_at: DataTypes.DATE,
-        updated_at: DataTypes.DATE,
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
       },
 
       {
         sequelize,
+        timestamps: true,
         modelName: 'Todos',
         tableName: 'Todos',
         charset: 'utf8',
         collate: 'utf8_general_ci',
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
       }
     );
   }

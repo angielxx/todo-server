@@ -41,7 +41,8 @@ const getTodosByQuery: RequestHandler = async (req, res) => {
 
   try {
     const todos = await Todos.findAll({
-      attributes: ['date', 'isCompleted', 'title', 'todoId'],
+      order: [['createdAt', 'ASC']],
+      attributes: ['date', 'isCompleted', 'title', 'todoId', 'createdAt'],
       where: {
         userId: user.userId,
         ...req.query,
