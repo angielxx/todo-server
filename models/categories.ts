@@ -26,10 +26,12 @@ class Categories extends Model<
           allowNull: false,
           autoIncrement: true,
         },
+
         name: {
           type: DataTypes.CHAR(50),
           allowNull: false,
         },
+
         color: {
           type: DataTypes.CHAR(25),
           allowNull: false,

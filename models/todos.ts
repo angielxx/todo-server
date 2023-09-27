@@ -7,6 +7,7 @@ import Sequelize, {
   Model,
 } from 'sequelize';
 import Users from './users';
+import Categories from './categories';
 
 class Todos extends Model<
   InferAttributes<Todos>,
@@ -15,10 +16,11 @@ class Todos extends Model<
   declare todoId: CreationOptional<number>;
   declare date: string;
   declare title: string;
-  declare status: 'done' | 'in progress' | 'not started';
-  declare created_at: CreationOptional<Date>;
-  declare updated_at: CreationOptional<Date>;
+  declare isCompleted: boolean;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
   declare userId: ForeignKey<Users['userId']>;
+  declare categoryId: ForeignKey<Categories['categoryId']>;
 
   static initiate(sequelize: Sequelize.Sequelize) {
     Todos.init(
@@ -29,32 +31,34 @@ class Todos extends Model<
           allowNull: false,
           autoIncrement: true,
         },
+
         date: {
-          type: DataTypes.DATE,
-          allowNull: false,
-        },
-        title: {
-          type: DataTypes.CHAR(50),
-          allowNull: false,
-        },
-        status: {
-          type: DataTypes.CHAR(25),
+          type: DataTypes.DATEONLY,
           allowNull: false,
         },
 
-        created_at: DataTypes.DATE,
-        updated_at: DataTypes.DATE,
+        title: {
+          type: DataTypes.STRING(50),
+          allowNull: false,
+        },
+
+        isCompleted: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+          allowNull: false,
+        },
+
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
       },
 
       {
         sequelize,
+        timestamps: true,
         modelName: 'Todos',
         tableName: 'Todos',
-        paranoid: true,
         charset: 'utf8',
         collate: 'utf8_general_ci',
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
       }
     );
   }
@@ -62,6 +66,12 @@ class Todos extends Model<
   static associate() {
     Users.hasMany(Todos, {
       foreignKey: 'userId',
+      onDelete: 'SET NULL',
+      onUpdate: 'RESTRICT',
+    });
+
+    Categories.hasMany(Todos, {
+      foreignKey: 'categoryId',
       onDelete: 'SET NULL',
       onUpdate: 'RESTRICT',
     });
