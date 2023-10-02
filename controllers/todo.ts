@@ -37,6 +37,8 @@ const getTodosByQuery: RequestHandler = async (req, res) => {
     return res.status(401).send('Unauthorized');
   }
 
+  console.log('cookie!!!', req.cookies);
+
   const user = req.user as Users;
 
   try {
