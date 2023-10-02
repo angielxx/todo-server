@@ -3,7 +3,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import crypto from 'crypto';
 
 import Users from '../models/users';
-import refreshToken from '../models/refreshToken';
 import { redisCli, redisClient } from '../app';
 
 const { SECRET_KEY, ACCESS_SECRET, REFRESH_SECRET } = process.env;
