@@ -84,14 +84,7 @@ const signin: RequestHandler = async (req, res, next) => {
     }
   );
 
-  // const refreshTokenDoc = new refreshToken({
-  //   token: refresh_token,
-  //   userId: user.userId.toString(),
-  //   expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 14),
-  // });
-  console.log('here1', redisClient);
   await redisCli.set(user.userId.toString(), refresh_token);
-  console.log('here2');
 
   res
     .cookie('refresh_token', refresh_token, {
@@ -108,7 +101,6 @@ const signin: RequestHandler = async (req, res, next) => {
 const refresh: RequestHandler = async (req, res) => {
   // const refresh_token = req.cookies['refresh_token'];
   const { refresh_token } = req.body;
-  console.log('refresh token', refresh_token);
 
   const REFRESH_KEY = process.env.REFRESH_SECRET as string;
   const ACCESS_KEY = process.env.ACCESS_SECRET as string;
@@ -128,11 +120,8 @@ const refresh: RequestHandler = async (req, res) => {
       .status(403)
       .send({ message: '유효하지 않은 리프레시 토큰입니다.' });
   }
-  console.log('jwtPayload', jwtPayload.id);
 
   const token = await redisCli.get(jwtPayload.id);
-
-  console.log('token!!!', token);
 
   if (!token || token !== refresh_token) {
     return res
@@ -164,11 +153,26 @@ const refresh: RequestHandler = async (req, res) => {
 };
 
 const logout: RequestHandler = async (req, res) => {
-  const refresh_token = req.cookies['refresh_token'];
+  // const refresh_token = req.cookies['refresh_token'];
+  const { refresh_token } = req.body;
 
-  if (refresh_token) {
-    await refreshToken.deleteOne({ token: refresh_token });
+  const REFRESH_KEY = process.env.REFRESH_SECRET as string;
+
+  if (!refresh_token) {
+    res.status(401).send({ message: '리프레시 토큰이 없습니다.' });
+    return;
   }
+
+  const jwtPayload = jwt.verify(refresh_token, REFRESH_KEY) as JwtPayload;
+
+  const storedRefreshToken = await redisCli.get(jwtPayload.id);
+
+  if (!storedRefreshToken) {
+    res.status(401).send({ message: '로그인 내역이 없습니다.' });
+    return;
+  }
+
+  await redisCli.del(jwtPayload.id);
 
   res
     .clearCookie('refresh_token')
