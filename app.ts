@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
+import * as redis from 'redis';
 
 import authRouter from './routes/authRouter';
 import { sequelize } from './models';
@@ -12,12 +13,33 @@ import passportConfig from './config/passport';
 
 dotenv.config();
 const app = express();
+export const redisClient = redis.createClient({ legacyMode: true });
+export const redisCli = redisClient.v4;
+
 passportConfig();
 
 const corOptions = {
   origin: 'http://localhost:5173',
   credentials: true,
 };
+
+redisClient.connect();
+
+redisClient.on('connect', () => {
+  console.log('Connected to Redis');
+});
+
+redisClient.on('ready', () => {
+  console.log('Redis client is ready');
+});
+
+redisClient.on('error', (err) => {
+  console.error('Error connecting to Redis:', err);
+});
+
+redisClient.on('end', () => {
+  console.log('Disconnected from Redis');
+});
 
 sequelize
   .sync({ force: false })
@@ -40,6 +62,7 @@ app.use('/auth', authRouter);
 app.use('/todos', passport.authenticate('jwt', { session: false }), todoRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+  console.error(err);
   res.status(500).send({
     message: 'Server Error',
     error: err,
