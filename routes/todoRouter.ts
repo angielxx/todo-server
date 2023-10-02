@@ -18,6 +18,6 @@ todoRouter.post('/', createTodo);
 
 todoRouter.put('/:id', updateTodo);
 
-todoRouter.delete(':id', deleteTodo);
+todoRouter.delete('/:id', deleteTodo);
 
 export default todoRouter;
