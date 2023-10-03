@@ -71,7 +71,7 @@ const signin: RequestHandler = async (req, res, next) => {
     { type: 'JWT', id: user.userId, email },
     ACCESS_KEY,
     {
-      expiresIn: '3s',
+      expiresIn: '1h',
     }
   );
 
@@ -132,7 +132,7 @@ const refresh: RequestHandler = async (req, res) => {
     { type: 'JWT', id: jwtPayload.id, email: jwtPayload.email },
     ACCESS_KEY,
     {
-      expiresIn: '3s',
+      expiresIn: '1h',
     }
   );
 
